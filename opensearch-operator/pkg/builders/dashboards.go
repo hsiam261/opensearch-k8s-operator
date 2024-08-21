@@ -215,6 +215,8 @@ func NewDashboardsSvcForCr(cr *opsterv1.OpenSearchCluster) *corev1.Service {
 		"opensearch.cluster.dashboards": cr.Name,
 	}
 
+	httpsProtocol := "HTTPS"
+
 	return &corev1.Service{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Service",
@@ -232,9 +234,10 @@ func NewDashboardsSvcForCr(cr *opsterv1.OpenSearchCluster) *corev1.Service {
 			LoadBalancerSourceRanges: cr.Spec.Dashboards.Service.LoadBalancerSourceRanges,
 			Ports: []corev1.ServicePort{
 				{
-					Name:     "http",
-					Protocol: "TCP",
-					Port:     port,
+					Name:        "http",
+					Protocol:    "TCP",
+					AppProtocol: &httpsProtocol,
+					Port:        port,
 					TargetPort: intstr.IntOrString{
 						IntVal: port,
 					},
